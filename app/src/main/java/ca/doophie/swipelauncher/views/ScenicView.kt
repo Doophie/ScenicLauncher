@@ -423,32 +423,40 @@ fun BoomBoxWidget(context: Context,
         .showAuthView(true)
         .build()
 
-    SpotifyAppRemote.connect(context, connectionParams, object : Connector.ConnectionListener {
-        override fun onConnected(appRemote: SpotifyAppRemote) {
-            remote = appRemote
-            Log.d("MainActivity", "Connected! Yay!")
+    fun connectToRemote() {
+        SpotifyAppRemote.connect(context, connectionParams, object : Connector.ConnectionListener {
+            override fun onConnected(appRemote: SpotifyAppRemote) {
+                remote = appRemote
+                Log.d("BoomBox", "Connected! Yay!")
 
-            // Subscribe to PlayerState
-            appRemote.playerApi.subscribeToPlayerState().setEventCallback {
-                isPaused = it.isPaused
+                // Subscribe to PlayerState
+                appRemote.playerApi.subscribeToPlayerState().setEventCallback {
+                    Log.d("BoomBox", "Updated player state: paused = ${it.isPaused}")
+                    isPaused = it.isPaused
 
-                val track: Track = it.track
-                currentSong = (track.name + " : " + track.artist.name).uppercase()
+                    val track: Track = it.track
+                    currentSong = (track.name + " : " + track.artist.name).uppercase()
 
-                if (isPaused != true) {
-                    showTheBand = true
+                    if (!isPaused) {
+                        showTheBand = true
+                    }
                 }
             }
-        }
 
-        override fun onFailure(throwable: Throwable) {
-            Log.e("MainActivity", throwable.message, throwable)
-            // Something went wrong when attempting to connect! Handle errors here
-        }
-    })
+            override fun onFailure(throwable: Throwable) {
+                Log.e("BoomBox", throwable.message, throwable)
+                // Something went wrong when attempting to connect! Handle errors here
+
+                connectToRemote()
+            }
+        })
+    }
+
+    LaunchedEffect(Unit) {
+        connectToRemote()
+    }
 
     Box(modifier = modifier) {
-
         ScenicWidget(context = context,
             imageId = if (showTheBand) {
                 if (isPaused) {
@@ -490,8 +498,6 @@ fun BoomBoxWidget(context: Context,
                     .basicMarquee()
             )
         }
-
-
     }
 }
 
