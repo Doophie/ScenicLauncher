@@ -13,17 +13,3 @@ import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.data.launch
 import ca.doophie.swipelauncher.views.pxToDp
 
-@Composable
-fun ScenicWidget(context: Context,
-                 imageId: Int,
-                 location: Point,
-                 appToOpen: App? = null,
-                 onClick: (()->Unit) = {}) {
-    Box {
-        Image(painter = painterResource(id = imageId),
-            contentDescription = "",
-            modifier = Modifier
-                .offset(location.x.pxToDp(), location.y.pxToDp())
-                .clickable { appToOpen?.launch(context) ?: onClick.invoke() })
-    }
-}

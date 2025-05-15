@@ -2,8 +2,9 @@ package ca.doophie.swipelauncher
 
 import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
-import android.content.Context
+import android.content.BroadcastReceiver
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
@@ -19,6 +20,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -27,13 +33,18 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.data.NotificationWatcher
+import ca.doophie.swipelauncher.data.SpotifyBroadcastReceiver
 import ca.doophie.swipelauncher.ui.theme.GrassGreen
 import ca.doophie.swipelauncher.ui.theme.SwipeLauncherTheme
-import ca.doophie.swipelauncher.utils.getScreenSize
 import ca.doophie.swipelauncher.views.ScenicView
+import com.spotify.android.appremote.api.ConnectionParams
+import com.spotify.android.appremote.api.Connector
+import com.spotify.android.appremote.api.SpotifyAppRemote
+import com.spotify.protocol.types.Track
 
 
 class MainActivity : ComponentActivity() {
+
     @SuppressLint("QueryPermissionsNeeded")
     override fun onCreate(savedInstanceState: Bundle?) {
         /**
@@ -61,6 +72,8 @@ class MainActivity : ComponentActivity() {
         if (!hasNotificationAccess()) openPermissions()
 
         startService(Intent(this, NotificationWatcher::class.java))
+
+
 
         /**
          * END NOTIFICATION ACCESS
