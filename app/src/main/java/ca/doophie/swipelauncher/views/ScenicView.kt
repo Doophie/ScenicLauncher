@@ -42,6 +42,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.FocusRequester
@@ -49,6 +50,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
@@ -87,6 +89,7 @@ fun Dp.dpToPx() = with(LocalDensity.current) { this@dpToPx.toPx() }
 @Composable
 fun Int.pxToDp() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ScenicView(context: Context,
                fetcher: ApplicationFetcher) {
@@ -98,12 +101,15 @@ fun ScenicView(context: Context,
     var minutes by remember { mutableIntStateOf(time.minute) }
     var hours by remember { mutableIntStateOf(time.hour) }
 
+    val dayPeriod by remember { mutableStateOf(getDayPeriod()) }
+
     // Get all apps and search ready
     val items = fetcher.filteredApplicationsList.collectAsState()
     val searchText = fetcher.searchText.collectAsState()
 
     // Variables for hiding / showing all apps list
     var showSearchResults by remember { mutableStateOf(false) }
+    var hideKeyboard by remember { mutableStateOf(false) }
     val isKeyboardOpen by keyboardAsState()
 
     // offset used to animate the all app list in / out
@@ -143,7 +149,7 @@ fun ScenicView(context: Context,
         Modifier
             .background(
                 color =
-                when (getDayPeriod()) {
+                when (dayPeriod) {
                     DayPeriod.MORNING -> SkyMorning
                     DayPeriod.AFTERNOON -> SkyBlue
                     DayPeriod.EVENING -> SkyEvening
@@ -156,14 +162,13 @@ fun ScenicView(context: Context,
 
                     val (x, y) = dragAmount
                     when {
-                        x > 0 -> { /* right */
-                        }
-
-                        x < 0 -> { /* left */
-                        }
+                        x > 0 -> { /* right */ }
+                        x < 0 -> { /* left */ }
                     }
                     when {
                         y < 0 -> { /* down */
+                            showSearchResults = false
+                            hideKeyboard = true
                         }
 
                         y > 0 -> {
@@ -182,6 +187,11 @@ fun ScenicView(context: Context,
                 }
             }) {
         Box(Modifier.offset { hideScenicBackgroundOffset }) {
+            if (hideKeyboard) {
+                LocalSoftwareKeyboardController.current?.hide()
+                hideKeyboard = false
+            }
+
             // background
             Image(painter = painterResource(id = R.drawable.scenic_background_grass_pond), contentDescription = "00b1dd")
 
@@ -199,8 +209,8 @@ fun ScenicView(context: Context,
 
             // sun / moon
             ScenicWidget(context = context,
-                imageId = if (getDayPeriod() == DayPeriod.EVENING || getDayPeriod() == DayPeriod.NIGHT) R.drawable.scenic_background_moon else R.drawable.scenic_background_sun,
-                location = Point(600, 470),
+                imageId = if (dayPeriod == DayPeriod.EVENING || dayPeriod == DayPeriod.NIGHT) R.drawable.scenic_background_moon else R.drawable.scenic_background_sun,
+                location = Point(650, 200),
                 appToOpen = fetcher.getApplication("reddit"))
 
             // boombox
@@ -409,6 +419,8 @@ fun BoomBoxWidget(context: Context,
                   location: Point,
                   fetcher: ApplicationFetcher,
                   modifier: Modifier = Modifier) {
+    var remoteConnectionAttempts: Int = 0
+
     var showTheBand by remember { mutableStateOf(false) }
 
     var isPaused by remember { mutableStateOf(true) }
@@ -429,6 +441,8 @@ fun BoomBoxWidget(context: Context,
                 remote = appRemote
                 Log.d("BoomBox", "Connected! Yay!")
 
+                remoteConnectionAttempts = 0
+
                 // Subscribe to PlayerState
                 appRemote.playerApi.subscribeToPlayerState().setEventCallback {
                     Log.d("BoomBox", "Updated player state: paused = ${it.isPaused}")
@@ -445,9 +459,10 @@ fun BoomBoxWidget(context: Context,
 
             override fun onFailure(throwable: Throwable) {
                 Log.e("BoomBox", throwable.message, throwable)
-                // Something went wrong when attempting to connect! Handle errors here
 
-                connectToRemote()
+                remoteConnectionAttempts += 1
+
+                if (remoteConnectionAttempts < 5) connectToRemote()
             }
         })
     }
