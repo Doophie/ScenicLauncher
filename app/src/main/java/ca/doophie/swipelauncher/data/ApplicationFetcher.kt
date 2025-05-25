@@ -52,6 +52,10 @@ class ApplicationFetcher: ViewModel() {
         allApplicationsList = installedApps
     }
 
+    fun clearText() {
+        _searchText.value = ""
+    }
+
     fun onSearchTextChange(text: String) {
         _searchText.value = text
     }

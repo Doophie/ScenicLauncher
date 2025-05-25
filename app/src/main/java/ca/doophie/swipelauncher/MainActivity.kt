@@ -36,6 +36,7 @@ import ca.doophie.swipelauncher.data.NotificationWatcher
 import ca.doophie.swipelauncher.data.SpotifyBroadcastReceiver
 import ca.doophie.swipelauncher.ui.theme.GrassGreen
 import ca.doophie.swipelauncher.ui.theme.SwipeLauncherTheme
+import ca.doophie.swipelauncher.views.ScenicLayout
 import ca.doophie.swipelauncher.views.ScenicView
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
@@ -94,8 +95,9 @@ class MainActivity : ComponentActivity() {
 
                     Column {
 
-                        ScenicView(context = this@MainActivity, fetcher = fetcher)
+                        //ScenicView(context = this@MainActivity, fetcher = fetcher)
 
+                        ScenicLayout(context = this@MainActivity, fetcher = fetcher)
                     }
                 }
             }

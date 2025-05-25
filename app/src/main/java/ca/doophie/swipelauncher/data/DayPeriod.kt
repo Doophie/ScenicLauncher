@@ -14,9 +14,9 @@ fun getDayPeriod(): DayPeriod {
 
     return if (hour in 4..11)
         DayPeriod.MORNING
-    else if (hour in 12 .. 18)
+    else if (hour in 12 .. 17)
         DayPeriod.AFTERNOON
-    else if (hour in 19 .. 21)
+    else if (hour in 18 .. 21)
         DayPeriod.EVENING
     else
         DayPeriod.NIGHT

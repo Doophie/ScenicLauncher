@@ -1,9 +1,9 @@
 package ca.doophie.swipelauncher.data
 
-import android.app.Notification
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.Log
+import ca.doophie.swipelauncher.utils.UniversalTextClearer
 
 data class App(
     val name: String,
@@ -20,6 +20,7 @@ fun App.launch(context: Context) {
     }
 
     clearNotifications()
+    UniversalTextClearer.callback.invoke()
 
     context.startActivity(intent)
 }
