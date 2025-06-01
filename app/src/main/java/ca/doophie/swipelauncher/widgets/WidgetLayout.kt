@@ -19,14 +19,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
-import ca.doophie.swipelauncher.R
 import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.data.DayPeriod
 import ca.doophie.swipelauncher.data.getDayPeriod
-import ca.doophie.swipelauncher.ui.theme.SkyBlue
-import ca.doophie.swipelauncher.ui.theme.SkyEvening
-import ca.doophie.swipelauncher.ui.theme.SkyMorning
-import ca.doophie.swipelauncher.ui.theme.SkyNight
 import ca.doophie.swipelauncher.utils.keyboardAsState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -54,6 +49,16 @@ fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
             IntOffset(0, 2500)
         } else {
             IntOffset(0, 200)
+        },
+        label = "offset",
+        animationSpec = tween(1000)
+    )
+
+    val showSearchOffset by animateIntOffsetAsState(
+        targetValue = if (isKeyboardOpen || showSearchResults) {
+            IntOffset(0, 0)
+        } else {
+            IntOffset(1080, -2500)
         },
         label = "offset",
         animationSpec = tween(1000)
@@ -111,6 +116,7 @@ fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
                 }
             }
         }) {
+
         // showing the main layout filled with widgets
         Box(Modifier.offset { hideBackgroundOffset }) {
             // background
@@ -122,8 +128,14 @@ fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
         }
 
         // showing the search layout
-        if (showSearchResults || isKeyboardOpen) {
-            AllApplicationsSearchWidget(context, fetcher = fetcher, listItemBackground = listItemBackground)
+        Box(Modifier.offset { showSearchOffset }) {
+            if (isKeyboardOpen || showSearchResults) {
+                AllApplicationsSearchWidget(
+                    context,
+                    fetcher = fetcher,
+                    listItemBackground = listItemBackground
+                )
+            }
         }
 
     }
