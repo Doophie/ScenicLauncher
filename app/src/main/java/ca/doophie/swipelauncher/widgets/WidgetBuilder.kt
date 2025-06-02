@@ -2,6 +2,7 @@ package ca.doophie.swipelauncher.widgets
 
 import android.content.Context
 import android.graphics.Point
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -23,11 +24,13 @@ import java.util.Locale
 class WidgetBuilder {
     enum class Type {
         BASIC,
+        CONTAINER,
         BOOM_BOX,
         CLOCK;
     }
 
     enum class AltImageType {
+        CONTAINER,
         NOTIFICATION,
         DAY_PERIOD;
     }
@@ -40,7 +43,6 @@ class WidgetBuilder {
 
     private var location: Point = Point(0, 0)
     private var onClick: (()->Unit) = {}
-    private var fetcher: ApplicationFetcher? = null
     private var applicationName: String = ""
 
     private var noMedia: Int = 0
@@ -50,6 +52,7 @@ class WidgetBuilder {
     private var nextMedia: Int = 0
     private var playPauseMedia: Int = 0
 
+    private var items: List<WidgetBuilder> = emptyList()
 
     private var secondsHands = R.drawable.scenic_background_seconds_fly
     private var minutesHands = R.drawable.scenic_background_minute_duck
@@ -100,6 +103,24 @@ class WidgetBuilder {
             return widgetBuilder
         }
 
+        fun container(
+            imageId: Int,
+            altImageId: Int? = null,
+            items: List<WidgetBuilder>,
+            location: Point
+        ): WidgetBuilder {
+            val widgetBuilder = WidgetBuilder()
+
+            widgetBuilder.items = items
+            widgetBuilder.altImageType = AltImageType.CONTAINER
+            widgetBuilder.type = Type.CONTAINER
+            widgetBuilder.imageId = imageId
+            widgetBuilder.altImageId = altImageId
+            widgetBuilder.location = location
+
+            return widgetBuilder
+        }
+
         fun boomBox(
             noMedia: Int,
             playMedia: Int,
@@ -127,18 +148,17 @@ class WidgetBuilder {
 
     @Composable
     fun Build(context: Context, fetcher: ApplicationFetcher) {
-        this.fetcher = fetcher
-
         when (type) {
-            Type.BASIC -> BuildBasic(context)
-            Type.BOOM_BOX -> BuildBoomBox(context)
-            Type.CLOCK -> BuildClock(context)
+            Type.BASIC -> BuildBasic(context, fetcher)
+            Type.BOOM_BOX -> BuildBoomBox(context, fetcher)
+            Type.CLOCK -> BuildClock(context, fetcher)
+            Type.CONTAINER -> BuildContainer(context, fetcher)
         }
     }
 
     @Composable
-    private fun BuildBasic(context: Context) {
-        val application = fetcher?.getApplication(applicationName)
+    private fun BuildBasic(context: Context, fetcher: ApplicationFetcher) {
+        val application = fetcher.getApplication(applicationName)
 
         val altImageType = altImageType
 
@@ -153,7 +173,7 @@ class WidgetBuilder {
                     onClick = onClick)
 
                 LaunchedEffect(this) {
-                    fetcher?.watchNotifications(application) {
+                    fetcher.watchNotifications(application) {
                         hasNotifications = it
                     }
                 }
@@ -184,9 +204,9 @@ class WidgetBuilder {
     }
 
     @Composable
-    private fun BuildBoomBox(context: Context) {
+    private fun BuildBoomBox(context: Context, fetcher: ApplicationFetcher) {
         BoomBoxWidget(context = context,
-            fetcher = fetcher!!,
+            fetcher = fetcher,
             noMedia = noMedia,
             playMedia = playMedia,
             pauseMedia = pauseMedia,
@@ -196,7 +216,7 @@ class WidgetBuilder {
             location = location)
     }
 
-    @Composable fun BuildClock(context: Context) {
+    @Composable fun BuildClock(context: Context, fetcher: ApplicationFetcher) {
         ClockWidget(
             context,
             location = location,
@@ -204,6 +224,28 @@ class WidgetBuilder {
             secondsHands = secondsHands,
             minutesHands = minutesHands,
             hoursHand = hoursHand,
-            appToOpen = fetcher!!.allApplicationsList.firstOrNull { it.name.toLowerCase(Locale.getDefault()).contains("clock") })
+            appToOpen = fetcher.allApplicationsList.firstOrNull { it.name.toLowerCase(Locale.getDefault()).contains("clock") })
     }
+
+    @Composable
+    private fun BuildContainer(context: Context, fetcher: ApplicationFetcher) {
+        var isOpen by remember { mutableStateOf(false) }
+
+        Box {
+            BasicWidget(context = context,
+                imageId = if (isOpen) altImageId ?: imageId else imageId,
+                location = location,
+                onClick = {
+                    isOpen = !isOpen
+                })
+
+            if (isOpen) {
+                for (item in items) {
+                    item.Build(context, fetcher)
+                }
+            }
+        }
+    }
+
+
 }

@@ -117,7 +117,36 @@ fun ScenicLayout(context: Context, fetcher: ApplicationFetcher) {
                     minutesHands = R.drawable.scenic_background_minute_duck,
                     hoursHand = R.drawable.scenic_background_hour_duck,
                     background = PondBlue
-                )
+                ),
+
+                WidgetBuilder.basic(
+                    imageId = R.drawable.scenic_background_notebook,
+                    location = Point(350, 1580),
+                    applicationName = "notes"
+                ),
+
+                WidgetBuilder.container(
+                    imageId = R.drawable.scenic_background_briefcase_closed,
+                    altImageId = R.drawable.scenic_background_briefcase_open,
+                    items = listOf(
+                        WidgetBuilder.basic(
+                            imageId = R.drawable.scenic_background_sdk_test_page,
+                            location = Point(860, 1730),
+                            applicationName = "sdk test"
+                        ),
+                        WidgetBuilder.basic(
+                            imageId = R.drawable.scenic_background_eid_me_page,
+                            location = Point(860, 1580),
+                            applicationName = "eid-me"
+                        ),
+                        WidgetBuilder.basic(
+                            imageId = R.drawable.scenic_background_scan_page,
+                            location = Point(860, 1430),
+                            applicationName = "card scan"
+                        ),
+                    ),
+                    location = Point(850, 1880)
+                ),
             ),
             fetcher,
             listItemBackground = R.drawable.scenic_background_plane,

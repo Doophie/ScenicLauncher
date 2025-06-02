@@ -96,28 +96,28 @@ fun BoomBoxWidget(context: Context,
         BasicWidget(context = context,
             imageId = if (showTheBand) {
                 if (isPaused) {
-                    pauseMedia//R.drawable.scenic_background_radio_display
+                    pauseMedia
                 } else {
-                    playMedia//R.drawable.scenic_background_radio_display_playing
+                    playMedia
                 }
             } else
-                noMedia,//R.drawable.scenic_background_radio_display_empty,
+                noMedia,
             location = Point(location.x + 130, location.y),
             appToOpen = fetcher.getApplication("spotify"))
 
         if (showTheBand) {
             BasicWidget(context = context,
-                imageId = playPauseMedia,//R.drawable.scenic_background_speaker,
+                imageId = playPauseMedia,
                 location = Point(location.x + 60, location.y + 290),
                 onClick = {  if (isPaused) remote?.playerApi?.resume() else remote?.playerApi?.pause() })
 
             BasicWidget(context = context,
-                imageId = nextMedia,//R.drawable.scenic_background_speaker,
+                imageId = nextMedia,
                 location = Point(location.x + 460, location.y + 290),
                 onClick = { remote?.playerApi?.skipNext() })
 
             BasicWidget(context = context,
-                imageId = offButton,//R.drawable.scenic_background_off_button,
+                imageId = offButton,
                 location = Point(location.x + 210, location.y + 360),
                 onClick = {
                     remote?.playerApi?.pause()

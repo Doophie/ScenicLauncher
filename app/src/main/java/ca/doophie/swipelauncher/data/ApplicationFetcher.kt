@@ -64,7 +64,12 @@ class ApplicationFetcher: ViewModel() {
     }
 
     fun getApplication(name: String): App? {
-        return allApplicationsList.firstOrNull { it.name.lowercase().contains(name) }
+        return allApplicationsList.firstOrNull { it.name.lowercase() == name } ?:
+               allApplicationsList.firstOrNull { it.name.lowercase().contains(name) }
+    }
+
+    fun getApplicationByPackage(packageName: String): App? {
+        return allApplicationsList.firstOrNull { it.packageName == packageName }
     }
 
     fun watchNotifications(app: App, callback: (Boolean)->Unit) {
