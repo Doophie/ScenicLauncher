@@ -2,67 +2,21 @@ package ca.doophie.swipelauncher.views
 
 import android.content.Context
 import android.graphics.Point
-import androidx.compose.animation.core.animateIntOffsetAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.IntOffset
-import androidx.compose.ui.unit.dp
 import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.R
-import ca.doophie.swipelauncher.data.DayPeriod
-import ca.doophie.swipelauncher.data.getDayPeriod
-import ca.doophie.swipelauncher.data.hasNotifications
 import ca.doophie.swipelauncher.ui.theme.PondBlue
 import ca.doophie.swipelauncher.ui.theme.SkyBlue
 import ca.doophie.swipelauncher.ui.theme.SkyEvening
 import ca.doophie.swipelauncher.ui.theme.SkyMorning
 import ca.doophie.swipelauncher.ui.theme.SkyNight
-import ca.doophie.swipelauncher.utils.UniversalTextClearer
-import ca.doophie.swipelauncher.utils.keyboardAsState
-import ca.doophie.swipelauncher.widgets.BoomBoxWidget
-import ca.doophie.swipelauncher.widgets.ClockWidget
-import ca.doophie.swipelauncher.widgets.BasicWidget
 import ca.doophie.swipelauncher.widgets.WidgetBuilder
 import ca.doophie.swipelauncher.widgets.WidgetLayout
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.time.LocalTime
-import java.util.Locale
 
 
 @Composable
-fun ScenicLayout(context: Context,
-               fetcher: ApplicationFetcher) {
+fun ScenicLayout(context: Context, fetcher: ApplicationFetcher) {
     Box {
         WidgetLayout(
             context,

@@ -5,11 +5,13 @@ import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 class ApplicationFetcher: ViewModel() {
 
@@ -37,6 +39,7 @@ class ApplicationFetcher: ViewModel() {
     fun getAllApplications(packageManager: PackageManager) {
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+
         val pkgAppsList: List<ResolveInfo> =
             packageManager.queryIntentActivities(mainIntent, 0)
 
@@ -62,6 +65,19 @@ class ApplicationFetcher: ViewModel() {
 
     fun getApplication(name: String): App? {
         return allApplicationsList.firstOrNull { it.name.lowercase().contains(name) }
+    }
+
+    fun watchNotifications(app: App, callback: (Boolean)->Unit) {
+        var hasNotifications = !app.hasNotifications()
+
+        viewModelScope.launch {
+            while (true) {
+                val new = app.hasNotifications()
+                if (new != hasNotifications) callback(new)
+                hasNotifications = new
+                delay(1500)
+            }
+        }
     }
 
 

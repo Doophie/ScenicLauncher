@@ -3,6 +3,12 @@ package ca.doophie.swipelauncher.widgets
 import android.content.Context
 import android.graphics.Point
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import ca.doophie.swipelauncher.R
@@ -11,6 +17,7 @@ import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.data.DayPeriod
 import ca.doophie.swipelauncher.data.getDayPeriod
 import ca.doophie.swipelauncher.data.hasNotifications
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 class WidgetBuilder {
@@ -133,13 +140,41 @@ class WidgetBuilder {
     private fun BuildBasic(context: Context) {
         val application = fetcher?.getApplication(applicationName)
 
+        val altImageType = altImageType
+
         if (application != null) {
-            BasicWidget(context = context,
-                imageId = if ((altImageType == AltImageType.NOTIFICATION && application.hasNotifications()) ||
-                    (altImageType == AltImageType.DAY_PERIOD && (getDayPeriod() == DayPeriod.AFTERNOON || getDayPeriod() == DayPeriod.MORNING)))
-                    altImageId ?: imageId else imageId,
-                location = location,
-                appToOpen = application)
+            if (altImageType == AltImageType.NOTIFICATION) {
+                var hasNotifications by remember { mutableStateOf(application.hasNotifications()) }
+
+                BasicWidget(context = context,
+                    imageId = if (hasNotifications) altImageId ?: imageId else imageId,
+                    location = location,
+                    appToOpen = application,
+                    onClick = onClick)
+
+                LaunchedEffect(this) {
+                    fetcher?.watchNotifications(application) {
+                        hasNotifications = it
+                    }
+                }
+            } else {
+                // refresh every minute
+                var dayPeriod by remember { mutableStateOf(getDayPeriod()) }
+
+                BasicWidget(context = context,
+                    imageId = if ((dayPeriod == DayPeriod.AFTERNOON || dayPeriod == DayPeriod.MORNING)) altImageId ?: imageId else imageId,
+                    location = location,
+                    appToOpen = application,
+                    onClick = onClick)
+
+                LaunchedEffect(this) {
+                    while (true) {
+                        dayPeriod = getDayPeriod()
+
+                        delay(60000)
+                    }
+                }
+            }
         } else {
             BasicWidget(context = context,
                 imageId = imageId,

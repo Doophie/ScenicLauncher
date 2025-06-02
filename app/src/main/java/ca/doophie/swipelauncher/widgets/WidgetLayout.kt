@@ -68,7 +68,7 @@ fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
         while (true) {
             dayPeriod = getDayPeriod()
 
-            delay(1000 * 60 * 60)
+            delay(1000 * 60)
         }
     }
 

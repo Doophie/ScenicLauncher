@@ -24,6 +24,9 @@ fun BasicWidget(context: Context,
             contentDescription = "",
             modifier = Modifier
                 .offset(location.x.pxToDp(), location.y.pxToDp())
-                .clickable { appToOpen?.launch(context) ?: onClick.invoke() })
+                .clickable {
+                    onClick.invoke()
+                    appToOpen?.launch(context)
+                })
     }
 }
