@@ -38,6 +38,8 @@ class WidgetBuilder {
     private var type: Type = Type.BASIC
     private var altImageType: AltImageType = AltImageType.NOTIFICATION
 
+    private var rotation: Float = 0f
+
     private var imageId: Int = 0
     private var altImageId: Int? = null
 
@@ -146,6 +148,12 @@ class WidgetBuilder {
         }
     }
 
+    fun rotate(rotation: Float): WidgetBuilder {
+        this.rotation = rotation
+
+        return this
+    }
+
     @Composable
     fun Build(context: Context, fetcher: ApplicationFetcher) {
         when (type) {
@@ -169,6 +177,7 @@ class WidgetBuilder {
                 BasicWidget(context = context,
                     imageId = if (hasNotifications) altImageId ?: imageId else imageId,
                     location = location,
+                    rotation = rotation,
                     appToOpen = application,
                     onClick = onClick)
 
@@ -184,6 +193,7 @@ class WidgetBuilder {
                 BasicWidget(context = context,
                     imageId = if ((dayPeriod == DayPeriod.AFTERNOON || dayPeriod == DayPeriod.MORNING)) altImageId ?: imageId else imageId,
                     location = location,
+                    rotation = rotation,
                     appToOpen = application,
                     onClick = onClick)
 
@@ -199,6 +209,7 @@ class WidgetBuilder {
             BasicWidget(context = context,
                 imageId = imageId,
                 location = location,
+                rotation = rotation,
                 onClick = onClick)
         }
     }
@@ -235,6 +246,7 @@ class WidgetBuilder {
             BasicWidget(context = context,
                 imageId = if (isOpen) altImageId ?: imageId else imageId,
                 location = location,
+                rotation = rotation,
                 onClick = {
                     isOpen = !isOpen
                 })

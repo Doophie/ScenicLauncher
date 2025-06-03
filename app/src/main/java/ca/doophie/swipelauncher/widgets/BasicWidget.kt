@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
 import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.data.launch
@@ -18,12 +19,14 @@ fun BasicWidget(context: Context,
                 imageId: Int,
                 location: Point,
                 appToOpen: App? = null,
+                rotation: Float = 0f,
                 onClick: (()->Unit) = {}) {
     Box {
         Image(painter = painterResource(id = imageId),
             contentDescription = "",
             modifier = Modifier
                 .offset(location.x.pxToDp(), location.y.pxToDp())
+                .rotate(rotation)
                 .clickable {
                     onClick.invoke()
                     appToOpen?.launch(context)

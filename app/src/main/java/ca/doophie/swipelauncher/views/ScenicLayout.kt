@@ -121,9 +121,9 @@ fun ScenicLayout(context: Context, fetcher: ApplicationFetcher) {
 
                 WidgetBuilder.basic(
                     imageId = R.drawable.scenic_background_notebook,
-                    location = Point(350, 1580),
+                    location = Point(920, 1330),
                     applicationName = "notes"
-                ),
+                ).rotate(-20f),
 
                 WidgetBuilder.container(
                     imageId = R.drawable.scenic_background_briefcase_closed,
@@ -131,22 +131,22 @@ fun ScenicLayout(context: Context, fetcher: ApplicationFetcher) {
                     items = listOf(
                         WidgetBuilder.basic(
                             imageId = R.drawable.scenic_background_sdk_test_page,
-                            location = Point(860, 1730),
+                            location = Point(230, 1710),
                             applicationName = "sdk test"
-                        ),
+                        ).rotate(-35f),
                         WidgetBuilder.basic(
                             imageId = R.drawable.scenic_background_eid_me_page,
-                            location = Point(860, 1580),
+                            location = Point(270, 1810),
                             applicationName = "eid-me"
                         ),
                         WidgetBuilder.basic(
                             imageId = R.drawable.scenic_background_scan_page,
-                            location = Point(860, 1430),
+                            location = Point(230, 1890),
                             applicationName = "card scan"
-                        ),
+                        ).rotate(32f),
                     ),
-                    location = Point(850, 1880)
-                ),
+                    location = Point(80, 1810)
+                ).rotate(100f),
             ),
             fetcher,
             listItemBackground = R.drawable.scenic_background_plane,
