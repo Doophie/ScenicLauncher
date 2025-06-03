@@ -15,13 +15,20 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -31,12 +38,14 @@ import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.getBitmapFromDrawable
 import ca.doophie.swipelauncher.data.launch
 import ca.doophie.swipelauncher.utils.UniversalTextClearer
+import ca.doophie.swipelauncher.utils.getVibrantColor
 import ca.doophie.swipelauncher.views.TempAutoFocusingText
 
 @Composable
 fun AllApplicationsSearchWidget(context: Context,
                         fetcher: ApplicationFetcher,
                         listItemBackground: Int,
+                        listItemAltBackground: Int,
                         modifier: Modifier = Modifier) {
     // For updating the time in the background continuously
     LaunchedEffect(context) {
@@ -48,12 +57,25 @@ fun AllApplicationsSearchWidget(context: Context,
 
     @Composable
     fun ApplicationListItem(context: Context, application: App, modifier: Modifier = Modifier) {
+        var planeColor by remember { mutableStateOf(Red) }
+
+        LaunchedEffect(Unit) {
+            application.icon?.getVibrantColor {
+                planeColor = it
+            }
+        }
+
         Box(modifier = modifier.offset()) {
             Image(
                 painter = painterResource(id = listItemBackground),
                 contentDescription = "",
                 modifier = Modifier
                     .clickable { application.launch(context) })
+
+            Icon(
+                painter = painterResource(id = listItemAltBackground),
+                contentDescription = "",
+                tint = planeColor)
 
             Row(verticalAlignment = Alignment.Bottom) {
                 Spacer(modifier = Modifier.weight(1.5f))
@@ -80,8 +102,10 @@ fun AllApplicationsSearchWidget(context: Context,
     val applications = fetcher.filteredApplicationsList.collectAsState()
     val searchText = fetcher.searchText.collectAsState()
 
-    Column {
-        LazyColumn(modifier = modifier.weight(3F)) {
+    Column(modifier = Modifier
+        .padding(0.dp, 42.dp, 0.dp, 0.dp)) {
+        LazyColumn(modifier = modifier
+            .weight(3F)) {
             items(applications.value.count()) { index ->
                 ApplicationListItem(
                     context = context,

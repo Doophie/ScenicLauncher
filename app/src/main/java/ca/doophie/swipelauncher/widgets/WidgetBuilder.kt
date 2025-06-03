@@ -241,6 +241,8 @@ class WidgetBuilder {
 
             if (isOpen) {
                 for (item in items) {
+                    val oldOnClick = item.onClick
+                    item.onClick = { isOpen = false; oldOnClick.invoke() }
                     item.Build(context, fetcher)
                 }
             }

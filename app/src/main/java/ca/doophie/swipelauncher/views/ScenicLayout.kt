@@ -150,6 +150,7 @@ fun ScenicLayout(context: Context, fetcher: ApplicationFetcher) {
             ),
             fetcher,
             listItemBackground = R.drawable.scenic_background_plane,
+            listItemAltBackground = R.drawable.scenic_background_plane_blank_slate,
             backgroundImageId = R.drawable.scenic_background_grass_pond,
             backgroundColors = listOf(SkyMorning, SkyBlue, SkyEvening, SkyNight)
         )

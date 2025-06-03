@@ -32,6 +32,7 @@ import kotlinx.coroutines.launch
 fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
                  fetcher: ApplicationFetcher,
                  listItemBackground: Int,
+                 listItemAltBackground: Int,
                  backgroundImageId: Int,
                  backgroundColors: List<Color>
 ) {
@@ -133,7 +134,8 @@ fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
                 AllApplicationsSearchWidget(
                     context,
                     fetcher = fetcher,
-                    listItemBackground = listItemBackground
+                    listItemBackground = listItemBackground,
+                    listItemAltBackground = listItemAltBackground
                 )
             }
         }
