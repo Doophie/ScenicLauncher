@@ -3,8 +3,10 @@ package ca.doophie.swipelauncher.widgets
 import android.content.Context
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,16 +39,19 @@ import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.getBitmapFromDrawable
 import ca.doophie.swipelauncher.data.launch
+import ca.doophie.swipelauncher.data.openSettings
 import ca.doophie.swipelauncher.utils.UniversalTextClearer
 import ca.doophie.swipelauncher.utils.getVibrantColor
 import ca.doophie.swipelauncher.views.TempAutoFocusingText
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AllApplicationsSearchWidget(context: Context,
                         fetcher: ApplicationFetcher,
                         listItemBackground: Int,
                         listItemAltBackground: Int,
                         modifier: Modifier = Modifier) {
+
     // For updating the time in the background continuously
     LaunchedEffect(context) {
         // set text clear
@@ -70,7 +75,15 @@ fun AllApplicationsSearchWidget(context: Context,
                 painter = painterResource(id = listItemBackground),
                 contentDescription = "",
                 modifier = Modifier
-                    .clickable { application.launch(context) })
+                    .combinedClickable(
+                        onClick = {
+                            fetcher.mostRecentItem.value = application
+                            application.launch(context)
+                        }, onLongClick = {
+                            application.openSettings(context)
+                        }
+                    )
+            )
 
             Icon(
                 painter = painterResource(id = listItemAltBackground),
@@ -104,8 +117,17 @@ fun AllApplicationsSearchWidget(context: Context,
 
     Column(modifier = Modifier
         .padding(0.dp, 42.dp, 0.dp, 0.dp)) {
+        if (fetcher.mostRecentItem.value != null) {
+            ApplicationListItem(
+                context = context,
+                application = fetcher.mostRecentItem.value!!
+            )
+
+            Text("          ")
+        }
+
         LazyColumn(modifier = modifier
-            .weight(3F)) {
+            .weight(if (fetcher.mostRecentItem.value == null) 3f else 2f)) {
             items(applications.value.count()) { index ->
                 ApplicationListItem(
                     context = context,

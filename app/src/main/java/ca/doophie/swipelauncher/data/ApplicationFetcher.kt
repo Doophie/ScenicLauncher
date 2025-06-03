@@ -15,6 +15,8 @@ import kotlinx.coroutines.launch
 
 class ApplicationFetcher: ViewModel() {
 
+    var mostRecentItem: MutableStateFlow<App?> = MutableStateFlow(null)
+
     private val _searchText = MutableStateFlow("")
     val searchText = _searchText.asStateFlow()
 
