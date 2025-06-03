@@ -37,10 +37,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.data.ApplicationFetcher
-import ca.doophie.swipelauncher.getBitmapFromDrawable
 import ca.doophie.swipelauncher.data.launch
 import ca.doophie.swipelauncher.data.openSettings
 import ca.doophie.swipelauncher.utils.UniversalTextClearer
+import ca.doophie.swipelauncher.utils.getBitmapFromDrawable
 import ca.doophie.swipelauncher.utils.getVibrantColor
 import ca.doophie.swipelauncher.views.TempAutoFocusingText
 
@@ -123,11 +123,11 @@ fun AllApplicationsSearchWidget(context: Context,
                 application = fetcher.mostRecentItem.value!!
             )
 
-            Text("          ")
+            Text("   ")
         }
 
         LazyColumn(modifier = modifier
-            .weight(if (fetcher.mostRecentItem.value == null) 3f else 2f)) {
+            .weight(if (fetcher.mostRecentItem.value != null) 2.2f else 2.8f)) {
             items(applications.value.count()) { index ->
                 ApplicationListItem(
                     context = context,

@@ -27,8 +27,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.R
-import ca.doophie.swipelauncher.getBitmapFromDrawable
 import ca.doophie.swipelauncher.data.launch
+import ca.doophie.swipelauncher.utils.getBitmapFromDrawable
 
 @Composable
 fun AllApplicationsList(context: Context,

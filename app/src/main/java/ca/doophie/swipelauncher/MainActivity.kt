@@ -144,15 +144,3 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-fun getBitmapFromDrawable(drawable: Drawable): ImageBitmap {
-    val bmp = Bitmap.createBitmap(
-        drawable.intrinsicWidth,
-        drawable.intrinsicHeight,
-        Bitmap.Config.ARGB_8888
-    )
-    val canvas = Canvas(bmp)
-    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight())
-    drawable.draw(canvas)
-    return bmp.asImageBitmap()
-}
-
