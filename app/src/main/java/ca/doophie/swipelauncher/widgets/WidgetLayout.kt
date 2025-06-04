@@ -34,9 +34,7 @@ fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
                  listItemBackground: Int,
                  listItemAltBackground: Int,
                  backgroundImageId: Int,
-                 backgroundColors: List<Color>
-) {
-
+                 backgroundColors: List<Color>) {
 
     var dayPeriod by remember { mutableStateOf(getDayPeriod()) }
 
