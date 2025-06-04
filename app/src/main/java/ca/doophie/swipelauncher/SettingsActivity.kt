@@ -37,7 +37,9 @@ class SettingsActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = GrassGreen
                 ) {
-                    Column {  }
+                    Column {
+
+                    }
                 }
             }
         }

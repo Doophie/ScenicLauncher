@@ -1,6 +1,9 @@
 package ca.doophie.swipelauncher.widgets
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.graphics.Point
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -33,6 +36,8 @@ import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ca.doophie.swipelauncher.R
+import ca.doophie.swipelauncher.SettingsActivity
 import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.data.launch
@@ -112,25 +117,37 @@ fun AllApplicationsSearchWidget(context: Context,
 
     val applications = fetcher.filteredApplicationsList.collectAsState()
     val searchText = fetcher.searchText.collectAsState()
+    val mostRecentItem = fetcher.mostRecentItem.collectAsState()
 
     Column(modifier = Modifier
         .padding(0.dp, 42.dp, 0.dp, 0.dp)) {
-        if (fetcher.mostRecentItem.value != null) {
+        if (mostRecentItem.value != null) {
             ApplicationListItem(
                 context = context,
-                application = fetcher.mostRecentItem.value!!
+                application = mostRecentItem.value!!
             )
 
             Text("   ")
         }
 
         LazyColumn(modifier = modifier
-            .weight(if (fetcher.mostRecentItem.value != null) 2.2f else 2.8f)) {
+            .weight(if (mostRecentItem.value != null) 2.2f else 2.8f)) {
             items(applications.value.count()) { index ->
                 ApplicationListItem(
                     context = context,
                     application = applications.value.sortedBy { it.name }[index]
                 )
+
+                if (index == applications.value.count() - 1) {
+                    BasicWidget(
+                        context = context,
+                        imageId = R.drawable.scenic_background_helicopter,
+                        location = Point(700, 0),
+                        onClick = {
+                            val settingsActivity = Intent(context as Activity, SettingsActivity::class.java)
+                            context.startActivity(settingsActivity)
+                        })
+                }
             }
         }
 

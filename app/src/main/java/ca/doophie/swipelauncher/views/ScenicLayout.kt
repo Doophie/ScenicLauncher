@@ -146,7 +146,7 @@ fun ScenicLayout(context: Context, fetcher: ApplicationFetcher) {
                         ).rotate(32f),
                     ),
                     location = Point(80, 1810)
-                ).rotate(100f),
+                ).rotate(-15f),
             ),
             fetcher,
             listItemBackground = R.drawable.scenic_background_plane,

@@ -106,10 +106,10 @@ fun WidgetLayout(context: Context, widgets: List<WidgetBuilder>,
 
                             // we set this to false after keyboard is open so that dismissing keyboard
                             // will also dismiss the search view
-                            CoroutineScope(IO).launch {
-                                delay(2000)
-                                showSearchResults = false
-                            }
+//                            CoroutineScope(IO).launch {
+//                                delay(2000)
+//                                showSearchResults = false
+//                            }
                         }
                     }
                 }

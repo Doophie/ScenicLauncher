@@ -1,6 +1,7 @@
 package ca.doophie.swipelauncher.views
 
 import android.content.Context
+import android.graphics.Point
 import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.animateIntOffsetAsState
 import androidx.compose.animation.core.tween
@@ -29,6 +30,7 @@ import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.R
 import ca.doophie.swipelauncher.data.launch
 import ca.doophie.swipelauncher.utils.getBitmapFromDrawable
+import ca.doophie.swipelauncher.widgets.BasicWidget
 
 @Composable
 fun AllApplicationsList(context: Context,
@@ -39,13 +41,13 @@ fun AllApplicationsList(context: Context,
 
 
     LazyColumn(modifier = modifier) {
-       items(applications.count()) { index ->
+        items(applications.count()) { index ->
             ApplicationItem(
                 context = context,
                 application = applications.sortedBy { it.name }[index],
                 modifier = Modifier.offset { intOffsets[index].value }
             )
-        }
+       }
     }
 }
 
