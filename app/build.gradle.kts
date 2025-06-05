@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -40,7 +42,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     packaging {
         resources {
@@ -50,31 +52,27 @@ android {
 }
 
 dependencies {
+    kapt("androidx.room:room-compiler:2.5.0")
 
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.palette:palette:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.camera:camera-view:1.3.4")
-    implementation("androidx.camera:camera-core:1.3.4")
-    implementation("androidx.camera:camera-lifecycle:1.3.4")
-    implementation("androidx.camera:camera-camera2:1.3.4")
+    implementation(libs.room.runtime)
+    implementation(libs.lifecycle.livedata)
+    implementation(libs.lifecycle.runtime)
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.core.ktx)
+    implementation(libs.palette)
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling)
+    implementation(libs.material3)
+    implementation(libs.activity.compose)
+    implementation(platform(libs.compose))
+
+
+    implementation(libs.gson)
 
     // your app dependencies
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
-    implementation("com.google.code.gson:gson:2.6.1")
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2023.08.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }

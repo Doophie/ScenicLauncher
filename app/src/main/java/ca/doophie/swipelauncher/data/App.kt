@@ -8,10 +8,9 @@ import android.provider.Settings
 import android.util.Log
 import ca.doophie.swipelauncher.utils.UniversalTextClearer
 
-
 data class App(
-    val name: String,
     val packageName: String,
+    val name: String,
     val icon: Drawable?
 )
 

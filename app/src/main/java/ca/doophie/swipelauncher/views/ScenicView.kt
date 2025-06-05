@@ -255,7 +255,7 @@ fun ScenicView(context: Context,
                 secondsHands = R.drawable.scenic_background_seconds_fly,
                 minutesHands = R.drawable.scenic_background_minute_duck,
                 hoursHand = R.drawable.scenic_background_hour_duck,
-                appToOpen = fetcher.allApplicationsList.firstOrNull { it.name.toLowerCase(Locale.getDefault()).contains("clock") })
+                appToOpen = fetcher.allApplicationsList.firstOrNull { it.name.lowercase().contains("clock") })
         }
 
         // showing all apps search

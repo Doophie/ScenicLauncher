@@ -12,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import ca.doophie.swipelauncher.R
 import ca.doophie.swipelauncher.data.App
 import ca.doophie.swipelauncher.data.ApplicationFetcher
@@ -21,7 +23,29 @@ import ca.doophie.swipelauncher.data.hasNotifications
 import kotlinx.coroutines.delay
 import java.util.Locale
 
-class WidgetBuilder {
+@Entity(tableName="widgets")
+data class WidgetBuilder(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    private var type: Type = Type.BASIC,
+    private var altImageType: AltImageType = AltImageType.NOTIFICATION,
+    private var rotation: Float = 0f,
+    private var imageId: Int = 0,
+    private var altImageId: Int? = null,
+    private var location: Point = Point(0, 0),
+    private var applicationName: String = "",
+    private var noMedia: Int = 0,
+    private var playMedia: Int = 0,
+    private var pauseMedia: Int = 0,
+    private var offButton: Int = 0,
+    private var nextMedia: Int = 0,
+    private var playPauseMedia: Int = 0,
+    private var items: List<WidgetBuilder> = emptyList(),
+    private var secondsHands: Int = R.drawable.scenic_background_seconds_fly,
+    private var minutesHands: Int = R.drawable.scenic_background_minute_duck,
+    private var hoursHand: Int = R.drawable.scenic_background_hour_duck,
+    private var backgroundColor: Color = Color.Blue,
+    private var size: Int = 100) {
+
     enum class Type {
         BASIC,
         CONTAINER,
@@ -34,33 +58,6 @@ class WidgetBuilder {
         NOTIFICATION,
         DAY_PERIOD;
     }
-
-    private var type: Type = Type.BASIC
-    private var altImageType: AltImageType = AltImageType.NOTIFICATION
-
-    private var rotation: Float = 0f
-
-    private var imageId: Int = 0
-    private var altImageId: Int? = null
-
-    private var location: Point = Point(0, 0)
-    private var onClick: (()->Unit) = {}
-    private var applicationName: String = ""
-
-    private var noMedia: Int = 0
-    private var playMedia: Int = 0
-    private var pauseMedia: Int = 0
-    private var offButton: Int = 0
-    private var nextMedia: Int = 0
-    private var playPauseMedia: Int = 0
-
-    private var items: List<WidgetBuilder> = emptyList()
-
-    private var secondsHands = R.drawable.scenic_background_seconds_fly
-    private var minutesHands = R.drawable.scenic_background_minute_duck
-    private var hoursHand = R.drawable.scenic_background_hour_duck
-    private var backgroundColor = Color.Blue
-    private var size: Int = 100
 
     companion object {
         fun clock(
@@ -91,14 +88,12 @@ class WidgetBuilder {
             altImageType: AltImageType = AltImageType.NOTIFICATION,
             location: Point,
             applicationName: String,
-            onClick: (() -> Unit) = {}
         ): WidgetBuilder {
             val widgetBuilder = WidgetBuilder()
 
             widgetBuilder.imageId = imageId
             widgetBuilder.altImageId = altImageId
             widgetBuilder.location = location
-            widgetBuilder.onClick = onClick
             widgetBuilder.applicationName = applicationName
             widgetBuilder.altImageType = altImageType
 
@@ -178,8 +173,7 @@ class WidgetBuilder {
                     imageId = if (hasNotifications) altImageId ?: imageId else imageId,
                     location = location,
                     rotation = rotation,
-                    appToOpen = application,
-                    onClick = onClick)
+                    appToOpen = application)
 
                 LaunchedEffect(this) {
                     fetcher.watchNotifications(application) {
@@ -194,8 +188,7 @@ class WidgetBuilder {
                     imageId = if ((dayPeriod == DayPeriod.AFTERNOON || dayPeriod == DayPeriod.MORNING)) altImageId ?: imageId else imageId,
                     location = location,
                     rotation = rotation,
-                    appToOpen = application,
-                    onClick = onClick)
+                    appToOpen = application)
 
                 LaunchedEffect(this) {
                     while (true) {
@@ -209,8 +202,7 @@ class WidgetBuilder {
             BasicWidget(context = context,
                 imageId = imageId,
                 location = location,
-                rotation = rotation,
-                onClick = onClick)
+                rotation = rotation)
         }
     }
 
@@ -235,7 +227,7 @@ class WidgetBuilder {
             secondsHands = secondsHands,
             minutesHands = minutesHands,
             hoursHand = hoursHand,
-            appToOpen = fetcher.allApplicationsList.firstOrNull { it.name.toLowerCase(Locale.getDefault()).contains("clock") })
+            appToOpen = fetcher.allApplicationsList.firstOrNull { it.name.lowercase().contains("clock") })
     }
 
     @Composable
@@ -253,8 +245,6 @@ class WidgetBuilder {
 
             if (isOpen) {
                 for (item in items) {
-                    val oldOnClick = item.onClick
-                    item.onClick = { isOpen = false; oldOnClick.invoke() }
                     item.Build(context, fetcher)
                 }
             }
