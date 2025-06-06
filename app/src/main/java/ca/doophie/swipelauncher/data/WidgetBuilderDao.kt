@@ -2,7 +2,7 @@ package ca.doophie.swipelauncher.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import ca.doophie.swipelauncher.widgets.WidgetBuilder
+import ca.doophie.swipelauncher.data.WidgetBuilder
 
 @Dao
 interface WidgetBuilderDao {
@@ -13,5 +13,5 @@ interface WidgetBuilderDao {
     @Delete
     suspend fun delete(builder: WidgetBuilder)
     @Query("SELECT * FROM widgets")
-    fun getAllApps(): LiveData<List<App>>
+    fun getAllWidgets(): LiveData<List<WidgetBuilder>>
 }

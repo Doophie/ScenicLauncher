@@ -1,27 +1,22 @@
-package ca.doophie.swipelauncher.widgets
+package ca.doophie.swipelauncher.data
 
 import android.content.Context
 import android.graphics.Point
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ca.doophie.swipelauncher.R
-import ca.doophie.swipelauncher.data.App
-import ca.doophie.swipelauncher.data.ApplicationFetcher
-import ca.doophie.swipelauncher.data.DayPeriod
-import ca.doophie.swipelauncher.data.getDayPeriod
-import ca.doophie.swipelauncher.data.hasNotifications
+import ca.doophie.swipelauncher.widgets.BasicWidget
+import ca.doophie.swipelauncher.widgets.BoomBoxWidget
+import ca.doophie.swipelauncher.widgets.ClockWidget
 import kotlinx.coroutines.delay
-import java.util.Locale
 
 @Entity(tableName="widgets")
 data class WidgetBuilder(
@@ -43,7 +38,7 @@ data class WidgetBuilder(
     private var secondsHands: Int = R.drawable.scenic_background_seconds_fly,
     private var minutesHands: Int = R.drawable.scenic_background_minute_duck,
     private var hoursHand: Int = R.drawable.scenic_background_hour_duck,
-    private var backgroundColor: Color = Color.Blue,
+    private var backgroundColor: Color = Color.Companion.Blue,
     private var size: Int = 100) {
 
     enum class Type {
@@ -169,11 +164,13 @@ data class WidgetBuilder(
             if (altImageType == AltImageType.NOTIFICATION) {
                 var hasNotifications by remember { mutableStateOf(application.hasNotifications()) }
 
-                BasicWidget(context = context,
+                BasicWidget(
+                    context = context,
                     imageId = if (hasNotifications) altImageId ?: imageId else imageId,
                     location = location,
                     rotation = rotation,
-                    appToOpen = application)
+                    appToOpen = application
+                )
 
                 LaunchedEffect(this) {
                     fetcher.watchNotifications(application) {
@@ -184,11 +181,14 @@ data class WidgetBuilder(
                 // refresh every minute
                 var dayPeriod by remember { mutableStateOf(getDayPeriod()) }
 
-                BasicWidget(context = context,
-                    imageId = if ((dayPeriod == DayPeriod.AFTERNOON || dayPeriod == DayPeriod.MORNING)) altImageId ?: imageId else imageId,
+                BasicWidget(
+                    context = context,
+                    imageId = if ((dayPeriod == DayPeriod.AFTERNOON || dayPeriod == DayPeriod.MORNING)) altImageId
+                        ?: imageId else imageId,
                     location = location,
                     rotation = rotation,
-                    appToOpen = application)
+                    appToOpen = application
+                )
 
                 LaunchedEffect(this) {
                     while (true) {
@@ -199,16 +199,19 @@ data class WidgetBuilder(
                 }
             }
         } else {
-            BasicWidget(context = context,
+            BasicWidget(
+                context = context,
                 imageId = imageId,
                 location = location,
-                rotation = rotation)
+                rotation = rotation
+            )
         }
     }
 
     @Composable
     private fun BuildBoomBox(context: Context, fetcher: ApplicationFetcher) {
-        BoomBoxWidget(context = context,
+        BoomBoxWidget(
+            context = context,
             fetcher = fetcher,
             noMedia = noMedia,
             playMedia = playMedia,
@@ -216,10 +219,12 @@ data class WidgetBuilder(
             offButton = offButton,
             nextMedia = nextMedia,
             playPauseMedia = playPauseMedia,
-            location = location)
+            location = location
+        )
     }
 
-    @Composable fun BuildClock(context: Context, fetcher: ApplicationFetcher) {
+    @Composable
+    fun BuildClock(context: Context, fetcher: ApplicationFetcher) {
         ClockWidget(
             context,
             location = location,
@@ -227,7 +232,9 @@ data class WidgetBuilder(
             secondsHands = secondsHands,
             minutesHands = minutesHands,
             hoursHand = hoursHand,
-            appToOpen = fetcher.allApplicationsList.firstOrNull { it.name.lowercase().contains("clock") })
+            appToOpen = fetcher.allApplicationsList.firstOrNull {
+                it.name.lowercase().contains("clock")
+            })
     }
 
     @Composable
@@ -235,7 +242,8 @@ data class WidgetBuilder(
         var isOpen by remember { mutableStateOf(false) }
 
         Box {
-            BasicWidget(context = context,
+            BasicWidget(
+                context = context,
                 imageId = if (isOpen) altImageId ?: imageId else imageId,
                 location = location,
                 rotation = rotation,

@@ -11,7 +11,7 @@ import ca.doophie.swipelauncher.ui.theme.SkyBlue
 import ca.doophie.swipelauncher.ui.theme.SkyEvening
 import ca.doophie.swipelauncher.ui.theme.SkyMorning
 import ca.doophie.swipelauncher.ui.theme.SkyNight
-import ca.doophie.swipelauncher.widgets.WidgetBuilder
+import ca.doophie.swipelauncher.data.WidgetBuilder
 import ca.doophie.swipelauncher.widgets.WidgetLayout
 
 

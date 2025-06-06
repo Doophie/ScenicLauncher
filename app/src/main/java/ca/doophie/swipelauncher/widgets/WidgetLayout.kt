@@ -21,6 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import ca.doophie.swipelauncher.data.ApplicationFetcher
 import ca.doophie.swipelauncher.data.DayPeriod
+import ca.doophie.swipelauncher.data.WidgetBuilder
 import ca.doophie.swipelauncher.data.getDayPeriod
 import ca.doophie.swipelauncher.utils.keyboardAsState
 import kotlinx.coroutines.CoroutineScope
